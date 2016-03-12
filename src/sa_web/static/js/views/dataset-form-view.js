@@ -20,12 +20,9 @@ var Shareabouts = Shareabouts || {};
       // TODO: configure this
       var data = _.extend({
         place_config: this.options.placeConfig,
-        // when category is defined, the selected_category property will contain config file details for fields in the given category
-        selected_category: this.options.placeConfig.categories[category],
         user_token: this.options.userToken,
-        current_user: S.currentUser,
-        category_selected: category_selected || false
-      }, S.stickyFieldValues, this.model.toJSON());
+        current_user: S.currentUser
+      }, S.stickyFieldValues);
 
       this.$el.html(Handlebars.templates['dataset-form'](data));
       return this;
