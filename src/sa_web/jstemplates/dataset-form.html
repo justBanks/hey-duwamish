@@ -21,7 +21,7 @@
     <div id="selected-category">
     {{#if category_selected}}
       <input type="radio" id="selected-category-placeholder" class="category-btn-input" disabled checked>
-      <label class="category-btn-label">
+      <label class="category-btn-label" for="selected-category-palceholder">
         <img src={{ selected_category.icon_url }} />
         <span>{{ selected_category.label }}</span>
       </label>
@@ -32,7 +32,7 @@
     <div id="category-btns">
       {{#each place_config.categories}}
         <input type="radio" name={{ name }} value={{ @key }} id={{ @key }} class="category-btn-input">
-        <label for={{ @key }} class="category-btn-label">
+        <label for={{ @key }} class="category-btn-label category-btn-label-clickable">
           <img src={{icon_url}} />
           <span>{{ label }}</span>
         </label>

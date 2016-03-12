@@ -8,7 +8,7 @@ var Shareabouts = Shareabouts || {};
     events: {
       'submit form': 'onSubmit',
       'change input[type="file"]': 'onInputFileChange',
-      'click .category-btn-label': 'onCategoryChange',
+      'click .category-btn-label-clickable': 'onCategoryChange',
     },
     initialize: function(){
       // TODO: configure this
@@ -66,14 +66,18 @@ var Shareabouts = Shareabouts || {};
       return attrs;
     },
     onCategoryChange: function(evt) {
-      console.log("onCategoryChange");
+      var animationDelay = 400;
       // re-render the form with the selected category
       this.render($(evt.target).parent().prev().attr("id"), true);
       // manually set the category button again since the re-render resets it
       $(evt.target).parent().prev().prop("checked", true);
-      $("#selected-category").hide().show(400);
+      // hide and then show (with animation delay) the selected category button 
+      // so we don't see a duplicate selected category button briefly
+      $("#selected-category").hide().show(animationDelay);
       // slide up unused category buttons
-      $("#category-btns").animate( { height: "hide" }, 400 );
+      $("#category-btns").animate( { height: "hide" }, animationDelay );
+      // show menu expansion hamburger
+      
     },
     onInputFileChange: function(evt) {
 
