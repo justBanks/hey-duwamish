@@ -1,0 +1,33 @@
+<h4 class="">{{ place_config.title }}</h4>
+<p class="drag-marker-instructions">
+  {{#_}}First drag the map to set your pin's location.{{/_}}
+</p>
+<p class="drag-marker-warning is-visuallyhidden">{{#_}}It looks like you didn't set your location yet. Please drag the map to your location.{{/_}}</p>
+
+<p class="form-field">{{ place_config.help_text }}</p>
+
+<form id="dataset-form" class="place-form clearfix">
+
+  <fieldset>
+    <input type="hidden" name="visible" value="on">
+    <input type="hidden" name="user_token" value="{{{ user_token }}}">
+
+    <!-- TODO We need user data in the template to know whether a user
+         is already logged in.
+       -->
+
+    <!-- place buttons for dynamic form categories -->
+    <div id="category-btns">
+      {{#each place_config.categories}}
+        <input type="radio" name={{ name }} value={{ @key }} id={{ @key }} class="category-btn-input">
+        <label for={{ @key }} class="category-btn-label">
+          <img src={{icon_url}} />
+          <span>{{ label }}</span>
+        </label>
+      {{/each}}
+    </div>
+    <div style="clear:both"></div>
+    <br>
+    <div class="form-spinner"></div>
+</form>
+  
