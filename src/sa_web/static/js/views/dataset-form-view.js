@@ -80,7 +80,7 @@ var Shareabouts = Shareabouts || {};
     },
     onExpandCategories: function(evt) {
       var animationDelay = 400;
-      $("#selected-category").hide();
+      $("#selected-category").hide(animationDelay);
       $("#category-btns").animate( { height: "show" }, animationDelay ); 
     },
     onInputFileChange: function(evt) {
