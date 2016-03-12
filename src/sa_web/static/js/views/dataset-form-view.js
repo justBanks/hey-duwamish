@@ -9,6 +9,7 @@ var Shareabouts = Shareabouts || {};
       'submit form': 'onSubmit',
       'change input[type="file"]': 'onInputFileChange',
       'click .category-btn-label-clickable': 'onCategoryChange',
+      'click .category-menu-hamburger': 'onExpandCategories'
     },
     initialize: function(){
       // TODO: configure this
@@ -75,9 +76,12 @@ var Shareabouts = Shareabouts || {};
       // so we don't see a duplicate selected category button briefly
       $("#selected-category").hide().show(animationDelay);
       // slide up unused category buttons
-      $("#category-btns").animate( { height: "hide" }, animationDelay );
-      // show menu expansion hamburger
-      
+      $("#category-btns").animate( { height: "hide" }, animationDelay );      
+    },
+    onExpandCategories: function(evt) {
+      var animationDelay = 400;
+      $("#selected-category").hide();
+      $("#category-btns").animate( { height: "show" }, animationDelay ); 
     },
     onInputFileChange: function(evt) {
 
