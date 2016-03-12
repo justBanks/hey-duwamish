@@ -16,10 +16,21 @@ var Shareabouts = Shareabouts || {};
         this.options.defaultPlaceTypeName);
       S.TemplateHelpers.insertInputTypeFlags(this.options.placeConfig.items);
     },
-    render: function(){
-      // TODO: configure this
+    render: function(category, category_selected){
+      // Augment the model data with place types for the drop down
+      //
+      //  This is a little hacky--I need to find a better way to extend the template helpers
+      //  One option is to stop relying on them entirely and just use registered Handlebar helper functions
+      if (category != undefined) {
+        S.TemplateHelpers.insertInputTypeFlags(this.options.placeConfig.categories[category].fields);
+      }
+      ///////////
+      
+
       var data = _.extend({
         place_config: this.options.placeConfig,
+        selected_category: this.options.placeConfig.categories[category],
+        category_selected: category_selected || false,
         user_token: this.options.userToken,
         current_user: S.currentUser
       }, S.stickyFieldValues);
@@ -55,7 +66,11 @@ var Shareabouts = Shareabouts || {};
       return attrs;
     },
     onCategoryChange: function(evt) {
-      // TODO: load the appropriate place detail view here...
+      console.log("onCategoryChange");
+      // re-render the form with the selected category
+      this.render($(evt.target).parent().prev().attr("id"), true);
+      // manually set the category button again since the re-render resets it
+      $(evt.target).parent().prev().prop("checked", true);
     },
     onInputFileChange: function(evt) {
 
