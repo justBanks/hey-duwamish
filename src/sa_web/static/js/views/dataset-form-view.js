@@ -71,6 +71,9 @@ var Shareabouts = Shareabouts || {};
       this.render($(evt.target).parent().prev().attr("id"), true);
       // manually set the category button again since the re-render resets it
       $(evt.target).parent().prev().prop("checked", true);
+      $("#selected-category").hide().show(400);
+      // slide up unused category buttons
+      $("#category-btns").animate( { height: "hide" }, 400 );
     },
     onInputFileChange: function(evt) {
 

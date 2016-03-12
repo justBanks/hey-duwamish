@@ -16,6 +16,18 @@
          is already logged in.
        -->
 
+    <!-- container for selected category -->
+    <!-- note that the input here is purely aesthetic. The form driving the category changes is below -->
+    <div id="selected-category">
+    {{#if category_selected}}
+      <input type="radio" id="selected-category-placeholder" class="category-btn-input" disabled checked>
+      <label class="category-btn-label">
+        <img src={{ selected_category.icon_url }} />
+        <span>{{ selected_category.label }}</span>
+      </label>
+    {{/if}}
+    </div>
+
     <!-- place buttons for dynamic form categories -->
     <div id="category-btns">
       {{#each place_config.categories}}
