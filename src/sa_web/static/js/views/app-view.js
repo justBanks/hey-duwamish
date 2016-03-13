@@ -89,10 +89,12 @@ var Shareabouts = Shareabouts || {};
       });
 
       // Handle collection events
+      /* Collection events no longer trigger place form view
       _.each(this.collection.place, function(collection) {
         collection.on('add', self.onAddPlace, this);
         collection.on('remove', self.onRemovePlace, this);
       });
+      */
 
       // On any route (/place or /page), hide the list view
       this.options.router.bind('route', function(route) {
@@ -367,8 +369,8 @@ var Shareabouts = Shareabouts || {};
     },
 
     setPlaceFormViewLatLng: function(centerLatLng) {
-      if (this.placeFormView) {
-        this.placeFormView.setLatLng(centerLatLng);
+      if (this.datasetFormView) {
+        this.datasetFormView.setLatLng(centerLatLng);
       }
     },
     onMapZoomEnd: function(evt) {
@@ -547,7 +549,9 @@ var Shareabouts = Shareabouts || {};
         appView: this,
         router: this.options.router,
         placeConfig: this.options.placeConfig,
-        userToken: this.options.userToken
+        userToken: this.options.userToken,
+        // only need to send place collection, since all data added will be a place of some kind
+        collection: this.collection.place
       });
       
       this.$panel.removeClass().addClass('place-form');

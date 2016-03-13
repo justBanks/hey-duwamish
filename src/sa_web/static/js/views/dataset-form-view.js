@@ -66,17 +66,75 @@ var Shareabouts = Shareabouts || {};
 
       return attrs;
     },
+    getAttrs: function() {
+      var attrs = {},
+          locationAttr = this.options.placeConfig.location_item_name,
+          $form = this.$('form');
+
+      // Get values from the form
+      attrs = S.Util.getAttrs($form);
+
+      // get associated display values (for use on the place detail view)
+      // we get the display values off of the rendered form in case we're working with translated content
+      attrs.display_labels = {};
+
+      // get display value associated with <select> elements
+      $form.find(":selected").each(function() {
+        attrs.display_labels[$(this).parent().attr("name")] = ($(this).attr("value") == "no_response") ? "" : $(this).html();
+      });
+      
+      // get display value associated with checkbox and radio elements
+      $form.find(":checked").each(function() {
+        attrs.display_labels[$(this).attr("name")] = $(this).siblings("label").html();
+      });
+
+      // handle special case of yes-only checkboxes
+      $form.find("[data-type='yes_only_big_button']:not(:checked)").each(function() {
+        attrs.display_labels[$(this).attr("name")] = $(this).attr("data-alt-value");
+      });
+
+      // handle text boxes
+      $form.find("textarea, input[type='text']").each(function() {
+        attrs.display_labels[$(this).attr("name")] = $(this).val();
+      });
+
+      // Get the location attributes from the map
+      attrs.geometry = {
+        type: 'Point',
+        coordinates: [this.center.lng, this.center.lat]
+      };
+
+      if (this.location && locationAttr) {
+        attrs[locationAttr] = this.location;
+      }
+
+      return attrs;
+    },
     onCategoryChange: function(evt) {
-      var animationDelay = 400;
+      var self = this,
+          animationDelay = 400,
+          categoryId = $(evt.target).parent().prev().attr('id'),
+          // get the dataset id from the config so we know which collection to add it to
+          datasetId = this.options.placeConfig.categories[categoryId].dataset;
+
       // re-render the form with the selected category
-      this.render($(evt.target).parent().prev().attr("id"), true);
+      this.render(categoryId, true);
       // manually set the category button again since the re-render resets it
       $(evt.target).parent().prev().prop("checked", true);
       // hide and then show (with animation delay) the selected category button 
       // so we don't see a duplicate selected category button briefly
       $("#selected-category").hide().show(animationDelay);
       // slide up unused category buttons
-      $("#category-btns").animate( { height: "hide" }, animationDelay );      
+      $("#category-btns").animate( { height: "hide" }, animationDelay );
+
+      console.log("this.collection", this.collection);
+
+      // instantiate appropriate backbone model
+      this.collection[datasetId].on('add', self.setModel, this );
+      this.collection[datasetId].add({});
+    },
+    setModel: function(model) {
+      this.model = model;
     },
     onExpandCategories: function(evt) {
       var animationDelay = 400;
@@ -85,6 +143,54 @@ var Shareabouts = Shareabouts || {};
     },
     onInputFileChange: function(evt) {
 
-    }
+    },
+    onSubmit: Gatekeeper.onValidSubmit(function(evt) {
+      // Make sure that the center point has been set after the form was
+      // rendered. If not, this is a good indication that the user neglected
+      // to move the map to set it in the correct location.
+      if (!this.center) {
+        this.$('.drag-marker-instructions').addClass('is-visuallyhidden');
+        this.$('.drag-marker-warning').removeClass('is-visuallyhidden');
+
+        // Scroll to the top of the panel if desktop
+        this.$el.parent('article').scrollTop(0);
+        // Scroll to the top of the window, if mobile
+        window.scrollTo(0, 0);
+        return;
+      }
+
+      var router = this.options.router,
+          model = this.model,
+          // Should not include any files
+          attrs = this.getAttrs(),
+          $button = this.$('[name="save-place-btn"]'),
+          spinner, $fileInputs;
+
+      model.attributes["from_dynamic_form"] = true;
+      evt.preventDefault();
+
+      $button.attr('disabled', 'disabled');
+      spinner = new Spinner(S.smallSpinnerOptions).spin(this.$('.form-spinner')[0]);
+
+      S.Util.log('USER', 'new-place', 'submit-place-btn-click');
+
+      S.Util.setStickyFields(attrs, S.Config.survey.items, S.Config.place.items);
+
+      // Save and redirect
+      this.model.save(attrs, {
+        success: function() {
+          S.Util.log('USER', 'new-place', 'successfully-add-place');
+          router.navigate('/'+ model.get('datasetSlug') + '/' + model.id, {trigger: true});
+        },
+        error: function() {
+          S.Util.log('USER', 'new-place', 'fail-to-add-place');
+        },
+        complete: function() {
+          $button.removeAttr('disabled');
+          spinner.stop();
+        },
+        wait: true
+      });
+    })
   });
 }(Shareabouts, jQuery, Shareabouts.Util.console));
