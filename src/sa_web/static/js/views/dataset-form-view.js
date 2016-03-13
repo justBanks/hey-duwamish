@@ -12,6 +12,10 @@ var Shareabouts = Shareabouts || {};
       'click .category-menu-hamburger': 'onExpandCategories'
     },
     initialize: function(){
+      // keep track of relevant catgory & dataset info as user switches among catgories
+      this.selectedCategory = null;
+      this.selectedDatasetId = null;
+      this.selectedDatasetSlug = null;
       // TODO: configure this
       S.TemplateHelpers.overridePlaceTypeConfig(this.options.placeConfig.items,
         this.options.defaultPlaceTypeName);
@@ -112,13 +116,14 @@ var Shareabouts = Shareabouts || {};
     },
     onCategoryChange: function(evt) {
       var self = this,
-          animationDelay = 400,
-          categoryId = $(evt.target).parent().prev().attr('id'),
-          // get the dataset id from the config so we know which collection to add it to
-          datasetId = this.options.placeConfig.categories[categoryId].dataset;
+          animationDelay = 400;
+
+      this.selectedCategory = $(evt.target).parent().prev().attr('id'),
+      this.selectedDatasetId = this.options.placeConfig.categories[this.selectedCategory].dataset,
+      this.selectedDatasetSlug = this.options.placeConfig.categories[this.selectedCategory].datasetSlug;
 
       // re-render the form with the selected category
-      this.render(categoryId, true);
+      this.render(this.selectedCategory, true);
       // manually set the category button again since the re-render resets it
       $(evt.target).parent().prev().prop("checked", true);
       // hide and then show (with animation delay) the selected category button 
@@ -127,11 +132,10 @@ var Shareabouts = Shareabouts || {};
       // slide up unused category buttons
       $("#category-btns").animate( { height: "hide" }, animationDelay );
 
-      console.log("this.collection", this.collection);
-
       // instantiate appropriate backbone model
-      this.collection[datasetId].on('add', self.setModel, this );
-      this.collection[datasetId].add({});
+      this.collection[self.selectedDatasetId].on('add', self.setModel, this );
+      this.collection[self.selectedDatasetId].add({});
+      // remove model from old category
     },
     setModel: function(model) {
       this.model = model;
@@ -163,10 +167,17 @@ var Shareabouts = Shareabouts || {};
           model = this.model,
           // Should not include any files
           attrs = this.getAttrs(),
+          categoryId = $(evt.target),
           $button = this.$('[name="save-place-btn"]'),
           spinner, $fileInputs;
 
+      console.log("onSubmit categoryId", categoryId);
+
       model.attributes["from_dynamic_form"] = true;
+      model.attributes["datasetSlug"] = this.selectedDatasetSlug;
+      
+      console.log("this", this);
+      console.log("evt", evt);
       evt.preventDefault();
 
       $button.attr('disabled', 'disabled');
@@ -177,6 +188,7 @@ var Shareabouts = Shareabouts || {};
       S.Util.setStickyFields(attrs, S.Config.survey.items, S.Config.place.items);
 
       // Save and redirect
+      console.log("this.model", this.model);
       this.model.save(attrs, {
         success: function() {
           S.Util.log('USER', 'new-place', 'successfully-add-place');
