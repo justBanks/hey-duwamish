@@ -89,7 +89,9 @@ var Shareabouts = Shareabouts || {};
       
       // get display value associated with checkbox and radio elements
       $form.find(":checked").each(function() {
-        attrs.display_labels[$(this).attr("name")] = $(this).siblings("label").html();
+        // If an entry for this form element doesn't exist, create it and append the first selected item (if checkboxes).
+        // If it does exist (e.g. we're further in the .each() loop), append to it.
+        (!attrs.display_labels[$(this).attr("name")] ? attrs.display_labels[$(this).attr("name")] = $(this).next("label").html() : attrs.display_labels[$(this).attr("name")] += ", " + $(this).next("label").html());
       });
 
       // handle special case of yes-only checkboxes
@@ -171,13 +173,9 @@ var Shareabouts = Shareabouts || {};
           $button = this.$('[name="save-place-btn"]'),
           spinner, $fileInputs;
 
-      console.log("onSubmit categoryId", categoryId);
-
       model.attributes["from_dynamic_form"] = true;
       model.attributes["datasetSlug"] = this.selectedDatasetSlug;
       
-      console.log("this", this);
-      console.log("evt", evt);
       evt.preventDefault();
 
       $button.attr('disabled', 'disabled');
@@ -188,7 +186,6 @@ var Shareabouts = Shareabouts || {};
       S.Util.setStickyFields(attrs, S.Config.survey.items, S.Config.place.items);
 
       // Save and redirect
-      console.log("this.model", this.model);
       this.model.save(attrs, {
         success: function() {
           S.Util.log('USER', 'new-place', 'successfully-add-place');
