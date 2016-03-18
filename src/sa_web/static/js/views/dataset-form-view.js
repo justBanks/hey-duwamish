@@ -13,14 +13,22 @@ var Shareabouts = Shareabouts || {};
       'click input[data-input-type="binary_toggle"]': 'onBinaryToggle'
     },
     initialize: function(){
+      var self = this;
       // keep track of relevant catgory & dataset info as user switches among catgories
       this.selectedCategory = null;
       this.selectedDatasetId = null;
+      this.priorDatasetId = null;
       this.selectedDatasetSlug = null;
+      this.priorModelCid = null;
       // TODO: configure this
       S.TemplateHelpers.overridePlaceTypeConfig(this.options.placeConfig.items,
         this.options.defaultPlaceTypeName);
       S.TemplateHelpers.insertInputTypeFlags(this.options.placeConfig.items);
+
+      // attach collection listeners
+      for (var collection in this.collection) {
+        this.collection[collection].on('add', self.setModel, this);
+      }
     },
     render: function(category, category_selected){
       // Augment the model data with place types for the drop down
@@ -107,6 +115,7 @@ var Shareabouts = Shareabouts || {};
       this.selectedCategory = $(evt.target).parent().prev().attr('id'),
       this.selectedDatasetId = this.options.placeConfig.categories[this.selectedCategory].dataset,
       this.selectedDatasetSlug = this.options.placeConfig.categories[this.selectedCategory].datasetSlug;
+      //console.log("this.selectedDatasetId", this.selectedDatasetId);
 
       // re-render the form with the selected category
       this.render(this.selectedCategory, true);
@@ -119,13 +128,12 @@ var Shareabouts = Shareabouts || {};
       $("#category-btns").animate( { height: "hide" }, animationDelay );
 
       // instantiate appropriate backbone model
-      this.collection[self.selectedDatasetId].on('add', self.setModel, this );
       this.collection[self.selectedDatasetId].add({});
-      // remove model from old category
     },
     onBinaryToggle: function(evt) {
       var oldValue = $(evt.target).val(),
           // find the alternate label/value pair from the config
+          // TOOD: refactor to accommodate variable content sets
           altData = _.filter(this.options.placeConfig.dynamic_form_content.yes_no, function(item) {
             return item.value != oldValue;
           })[0];
@@ -135,7 +143,14 @@ var Shareabouts = Shareabouts || {};
       $(evt.target).next("label").html(altData.label);
     },
     setModel: function(model) {
+      var self = this;
       this.model = model;
+      if (this.priorModelCid && this.priorDatasetId) {
+        this.collection[self.priorDatasetId].get({ cid: self.priorModelCid }).destroy();
+        console.log("Destroyed " + this.priorModelCid);
+      }
+      this.priorModelCid = model.cid;
+      this.priorDatasetId = this.selectedDatasetId;
     },
     onExpandCategories: function(evt) {
       var animationDelay = 400;
