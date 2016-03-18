@@ -78,32 +78,6 @@ var Shareabouts = Shareabouts || {};
       // Get values from the form
       attrs = S.Util.getAttrs($form);
 
-      // get associated display values (for use on the place detail view)
-      // we get the display values off of the rendered form in case we're working with translated content
-      attrs.display_labels = {};
-
-      // get display value associated with <select> elements
-      $form.find(":selected").each(function() {
-        attrs.display_labels[$(this).parent().attr("name")] = ($(this).attr("value") == "no_response") ? "" : $(this).html();
-      });
-      
-      // get display value associated with checkbox and radio elements
-      $form.find(":checked").each(function() {
-        // If an entry for this form element doesn't exist, create it and append the first selected item (if checkboxes).
-        // If it does exist (e.g. we're further in the .each() loop), append to it.
-        (!attrs.display_labels[$(this).attr("name")] ? attrs.display_labels[$(this).attr("name")] = $(this).next("label").html() : attrs.display_labels[$(this).attr("name")] += ", " + $(this).next("label").html());
-      });
-
-      // handle special case of yes-only checkboxes
-      $form.find("[data-type='yes_only_big_button']:not(:checked)").each(function() {
-        attrs.display_labels[$(this).attr("name")] = $(this).attr("data-alt-value");
-      });
-
-      // handle text boxes
-      $form.find("textarea, input[type='text']").each(function() {
-        attrs.display_labels[$(this).attr("name")] = $(this).val();
-      });
-
       // Get the location attributes from the map
       attrs.geometry = {
         type: 'Point',

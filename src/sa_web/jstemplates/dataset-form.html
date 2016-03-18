@@ -48,12 +48,17 @@
         <label for="place-{{ name }}">{{ prompt }} {{# optional }}<small>({{#_}}optional{{/_}})</small>{{/ optional }}</label>
         
         <!-- begin field type definitions -->
+        {{#is type "date"}}
+          <input type="date">
+        {{/is}}
+
+
         {{#is type "text"}}
           <input id="place-{{ name }}" name="{{ name }}" type="{{ type }}" {{#attrs}} {{ key }}="{{ value }}"{{/attrs}} placeholder="{{placeholder}}">
         {{/is}}
 
         {{#is type "textarea"}}
-          <textarea id="place-{{ name }}" name="{{ name }}"{{#attrs}} {{ key }}="{{ value }}"{{/attrs}} placeholder="{{placeholder}}"></textarea>
+          <textarea id="place-{{ name }}" name="{{ name }}" {{#attrs}} {{ key }}="{{ value }}"{{/attrs}} placeholder="{{placeholder}}"></textarea>
         {{/is}}
 
         {{#is type "radio_big_buttons"}}
