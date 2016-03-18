@@ -79,10 +79,10 @@
           </div>
         {{/is}}
 
-        {{#is type "yes_only_big_button"}}
+        {{#is type "binary_toggle"}}
           <div>
-            <input type="checkbox" name={{ name }} id={{ name }} value={{../../place_config.dynamic_form_content.yes_no.[1].value}} data-input-type="yes_no_toggle" class="big-btn">
-            <label for={{ name }}>{{../../place_config.dynamic_form_content.yes_no.[1].label}}</label>
+            <input type="checkbox" name={{ name }} id={{ name }} value={{#with (property ../../place_config.dynamic_form_content content)}} {{ this.[1].value }} {{/with}} data-input-type="yes_no_toggle" class="big-btn">
+            <label for={{ name }}>{{#with (property ../../place_config.dynamic_form_content content)}} {{ this.[1].label }} {{/with}}</label>
           </div>
         {{/is}}
 
