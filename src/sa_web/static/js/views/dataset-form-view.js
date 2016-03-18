@@ -10,7 +10,7 @@ var Shareabouts = Shareabouts || {};
       'change input[type="file"]': 'onInputFileChange',
       'click .category-btn-label-clickable': 'onCategoryChange',
       'click .category-menu-hamburger': 'onExpandCategories',
-      'click input[data-input-type="yes_no_toggle"]': 'onYesNoToggle'
+      'click input[data-input-type="binary_toggle"]': 'onBinaryToggle'
     },
     initialize: function(){
       // keep track of relevant catgory & dataset info as user switches among catgories
@@ -79,6 +79,11 @@ var Shareabouts = Shareabouts || {};
       // Get values from the form
       attrs = S.Util.getAttrs($form);
 
+      // get values off of binary toggle buttons that have not been toggled
+      $.each($("input[data-input-type='binary_toggle']:not(:checked)"), function() {
+        attrs[$(this).attr("name")] = $(this).val();
+      });
+
       // Get the location attributes from the map
       attrs.geometry = {
         type: 'Point',
@@ -114,7 +119,7 @@ var Shareabouts = Shareabouts || {};
       this.collection[self.selectedDatasetId].add({});
       // remove model from old category
     },
-    onYesNoToggle: function(evt) {
+    onBinaryToggle: function(evt) {
       var oldValue = $(evt.target).val(),
           // find the alternate label/value pair from the config
           altData = _.filter(this.options.placeConfig.dynamic_form_content.yes_no, function(item) {
