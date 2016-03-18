@@ -48,8 +48,8 @@
         <label for="place-{{ name }}">{{ prompt }} {{# optional }}<small>({{#_}}optional{{/_}})</small>{{/ optional }}</label>
         
         <!-- begin field type definitions -->
-        {{#is type "date"}}
-          <input type="date">
+        {{#is type "datetime"}}
+          <input id="datetimepicker" type="text" >
         {{/is}}
 
         {{#is type "text"}}

@@ -42,6 +42,10 @@ var Shareabouts = Shareabouts || {};
       }, S.stickyFieldValues);
 
       this.$el.html(Handlebars.templates['dataset-form'](data));
+
+      // initialize datetime picker, if relevant
+      $('#datetimepicker').datetimepicker({ formatTime: 'g:i a' });
+
       return this;
     },
     remove: function() {
