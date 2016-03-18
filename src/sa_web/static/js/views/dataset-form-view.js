@@ -9,7 +9,8 @@ var Shareabouts = Shareabouts || {};
       'submit form': 'onSubmit',
       'change input[type="file"]': 'onInputFileChange',
       'click .category-btn-label-clickable': 'onCategoryChange',
-      'click .category-menu-hamburger': 'onExpandCategories'
+      'click .category-menu-hamburger': 'onExpandCategories',
+      'click input[data-input-type="yes_no_toggle"]': 'onYesNoToggle'
     },
     initialize: function(){
       // keep track of relevant catgory & dataset info as user switches among catgories
@@ -112,6 +113,17 @@ var Shareabouts = Shareabouts || {};
       this.collection[self.selectedDatasetId].on('add', self.setModel, this );
       this.collection[self.selectedDatasetId].add({});
       // remove model from old category
+    },
+    onYesNoToggle: function(evt) {
+      var oldValue = $(evt.target).val(),
+          // find the alternate label/value pair from the config
+          altData = _.filter(this.options.placeConfig.dynamic_form_content.yes_no, function(item) {
+            return item.value != oldValue;
+          })[0];
+
+      // set new value and label
+      $(evt.target).val(altData.value);
+      $(evt.target).next("label").html(altData.label);
     },
     setModel: function(model) {
       this.model = model;

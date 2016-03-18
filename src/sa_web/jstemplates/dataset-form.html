@@ -52,7 +52,6 @@
           <input type="date">
         {{/is}}
 
-
         {{#is type "text"}}
           <input id="place-{{ name }}" name="{{ name }}" type="{{ type }}" {{#attrs}} {{ key }}="{{ value }}"{{/attrs}} placeholder="{{placeholder}}">
         {{/is}}
@@ -82,8 +81,8 @@
 
         {{#is type "yes_only_big_button"}}
           <div>
-            <input type="checkbox" name={{ name }} id={{ name }} value="Yes" data-alt-value={{#_}}No{{/_}} data-type="yes_only_big_button" class="big-btn">
-            <label for={{ name }}>{{#_}}Yes{{/_}}</label>
+            <input type="checkbox" name={{ name }} id={{ name }} value={{../../place_config.dynamic_form_content.yes_no.[1].value}} data-input-type="yes_no_toggle" class="big-btn">
+            <label for={{ name }}>{{../../place_config.dynamic_form_content.yes_no.[1].label}}</label>
           </div>
         {{/is}}
 
