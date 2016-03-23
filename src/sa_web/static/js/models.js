@@ -221,6 +221,8 @@ var Shareabouts = Shareabouts || {};
     },
 
     parse: function(response) {
+      console.log("response", response);
+
       var properties = _.clone(response.properties);
       properties.geometry = _.clone(response.geometry);
       return properties;
@@ -268,6 +270,8 @@ var Shareabouts = Shareabouts || {};
     },
 
     fetchById: function(id, options) {
+      console.log("fetchById");
+
       options = options ? _.clone(options) : {};
       var self = this,
           place = new S.PlaceModel(),

@@ -774,7 +774,11 @@ var Shareabouts = Shareabouts || {};
 
       // Otherwise, fetch and use the result.
       } else {
-        this.places.fetchById(modelId, {
+        console.log("datasetId", datasetId);
+        console.log("datasetSlug", datasetSlug);
+        console.log("this.collection.place[datasetId]", this.collection.place[datasetId]);
+
+        this.collection.place[datasetId].fetchById(modelId, {
           // Check for a valid location type before adding it to the collection
           validate: true,
           success: onPlaceFound,
