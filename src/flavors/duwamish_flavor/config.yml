@@ -511,6 +511,7 @@ sidebar:
 
             - id: hoods
               title: _(Town Neighborhoods)
+              legendDivId: hood-legend
               visibleDefault: false
 
         - id: grp-land

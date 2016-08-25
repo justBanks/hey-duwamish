@@ -57,7 +57,12 @@ var Shareabouts = Shareabouts || {};
           isChecked = !!$cbox.is(':checked'),
           displaySetting = isChecked ? 'block' : 'none';
 
-      $('.cartodb-legend-stack').css('display', displaySetting);
+      var grpIndex = $('#map-' + id).closest('.layer-type-grouping').index();
+      var layerConfig = _.find(this.options.config.groupings[grpIndex].layers, function(layer) {
+                          return layer.id === id;
+                        });
+      var divId = layerConfig.legendDivId;
+      $('#' + divId).closest('.cartodb-legend-stack').css('display', displaySetting);
     }
 
   });
