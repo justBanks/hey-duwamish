@@ -5,7 +5,8 @@ var Shareabouts = Shareabouts || {};
   S.GISLegendView = Backbone.View.extend({
     events: {
       'change .map-legend-checkbox': 'toggleVisibility',
-      'change .map-legend-grouping-checkbox': 'toggleHeaderVisibility'
+      'change .map-legend-grouping-checkbox': 'toggleHeaderVisibility',
+      'change #map-hoods': 'toggleLegendVisibility'
     },
 
     render: function() {
@@ -48,6 +49,20 @@ var Shareabouts = Shareabouts || {};
         $(S).trigger("visibility", [layer.id, isChecked]);
         $("#map-" + layer.id).prop("checked", isChecked);
       }
+    },
+
+    toggleLegendVisibility: function(evt){
+      var $cbox = $(evt.target),
+          id = $cbox.attr('data-layerid'),
+          isChecked = !!$cbox.is(':checked'),
+          displaySetting = isChecked ? 'block' : 'none';
+
+      var grpIndex = $('#map-' + id).closest('.layer-type-grouping').index();
+      var layerConfig = _.find(this.options.config.groupings[grpIndex].layers, function(layer) {
+                          return layer.id === id;
+                        });
+      var divId = layerConfig.legendDivId;
+      $('#' + divId).closest('.cartodb-legend-stack').css('display', displaySetting);
     }
 
   });

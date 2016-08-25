@@ -110,6 +110,16 @@ map:
       url: "https://hdbig.cartodb.com/api/v2/viz/f9350ac8-d677-11e5-980b-0e5db1731f59/viz.json"
       opacity: 0.5
 
+    - id: hoods
+      type: cartodb
+      url: "https://darrylbanks.carto.com/api/v2/viz/261729a8-631e-11e6-b085-0ee66e2c9693/viz.json"
+      opacity: 0.5
+
+    # - id: landmarks
+    #   type: cartodb
+    #   url: "https://darrylbanks.carto.com/api/v2/viz/d98e2ef4-6838-11e6-8dd2-0e3ebc282e83/viz.json"
+    #   opacity: 0.5
+
 # The keys show up in the dropdown list when you are adding a new place
 
 # The values map the place type to map icons (defined below).
@@ -498,6 +508,11 @@ sidebar:
             - id: restoration
               title: _(Restoration Sites)
               visibleDefault: true
+
+            - id: hoods
+              title: _(Town Neighborhoods)
+              legendDivId: hood-legend
+              visibleDefault: false
 
         - id: grp-land
           title: _(Land Data)
